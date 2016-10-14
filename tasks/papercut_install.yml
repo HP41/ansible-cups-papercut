@@ -1,0 +1,11 @@
+---
+- name: Download Papercut Installer
+  get_url:
+    url: "{{cups_papercut_download_url}}"
+    dest: "{{cups_papercut_tmp_location}}/{{cups_papercut_install_file}}"
+    mode: a+x
+
+- name: Installing Papercut non interactively.
+  command: "{{cups_papercut_tmp_location}}/{{cups_papercut_install_file}} --non-interactive"
+  become: yes
+  become_user: "{{cups_papercut_acct_usn}}"

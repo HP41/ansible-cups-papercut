@@ -1,0 +1,43 @@
+---
+# Default Password: 1234 - Please change!
+cups_papercut_acct_pwd: "$6$rounds=656000$Z9nmDoEUNKCBJp1B$LQam1Lp00eIJyttcvVsnfCIxgmbVhtML3MNSs1NoxXi.gr7J8qdO0B7BGO5DqlPBets5OEOHPhZHXgtL8P9Hl/"
+cups_papercut_sandbox_web_print: False
+cups_papercut_download_url: "https://cdn.papercut.com/files/mf/16.x/pcmf-setup-16.3.38126-linux-x64.sh"
+
+# Groups are comma de-limitted
+cups_papercut_acct_groups: ""
+
+cups_papercut__debops_ferm_dependent_rules:
+  - name: "cups_papercut_http_https"
+    chain: 'INPUT'
+    type: 'accept'
+    protocol: 'tcp'
+    dport: ['9191', '9192']
+    accept_any: True
+
+cups_papercut_ldap: False
+
+cups_papercut_client_share_files_location: "{{cups_papercut_install_location}}/client"
+cups_papercut_client_share_files__bertvv_samba_config:
+- name: "papercut_client_install_files"
+  comment: "PaperCut Install files for different platforms"
+  path: "{{cups_papercut_client_share_files_location}}"
+  public: yes
+  browsable: yes
+  guest_ok: yes
+  read_only: yes
+
+cups_papercut_fetch_previous_version_to_localhost_location: "/tmp/cups_papercut_ansible_role/{{inventory_hostname}}/previous_papercut_info"
+
+
+##################################################
+############# CONFIGURABLE VARIABLES #############
+##################################################
+
+#cups_papercut_server_properties_file_location: ''
+
+#cups_papercut_pfx_password: ""
+#cups_papercut_license_key_file: ''
+#cups_papercut_source_ssl_private_key_location: ''
+#cups_papercut_source_ssl_public_key_location: ''
+#cups_papercut_db_backup_file: ''

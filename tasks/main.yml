@@ -1,0 +1,22 @@
+---
+- block:
+    - name: Include pre installation tasks
+      include: papercut_pre_install.yml
+
+    - name: Include PaperCut installation tasks
+      include: papercut_install.yml
+
+    - name: Configure PaperCut
+      include: papercut_configure.yml
+    
+    - name: Include post PaperCut installation tasks
+      include: papercut_post_install.yml
+
+  always:
+    - name: Include PaperCut cleanup tasks
+      include: papercut_cleanup.yml
+
+# TODO:
+# Secondary Site Mode
+# Secondary Print Server Mode
+# Configure for Sandbox Mode Web Print 

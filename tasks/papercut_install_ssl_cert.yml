@@ -1,0 +1,59 @@
+---
+- name: Ensure openssl exists
+  apt: name=openssl state=present
+
+- name: Create the pfx certificate file with the SSL keys specified.
+  command: >
+    openssl pkcs12 -export
+    -inkey "{{cups_papercut_source_ssl_private_key_location}}"
+    -in "{{cups_papercut_source_ssl_public_key_location}}"
+    -out "{{cups_papercut_tmp_location}}/certificate.pfx"
+    -passout pass:
+    -name "{{cups_papercut_certificate_alias_name}}"
+
+- name: Copy papercut-install-pfx-certificate.exp install script to {{ cups_papercut_tmp_location }}
+  copy:
+    src: "files/papercut-install-pfx-certificate.exp"
+    dest: "{{cups_papercut_tmp_location}}/papercut-install-pfx-certificate.exp"
+    mode: a+rx
+
+- name: Install the pfx certificate using an except script to avoid user interaction
+  command: >
+    expect
+    "{{cups_papercut_tmp_location}}/papercut-install-pfx-certificate.exp"
+    "{{cups_papercut_install_location}}/runtime/linux-x64/jre/bin/java"
+    "{{cups_papercut_pkcs_classpath}}"
+    "{{cups_papercut_pkcs_classname}}"
+    "{{cups_papercut_tmp_location}}/certificate.pfx"
+    "{{cups_papercut_custom_ssl_keystore}}"
+    "{{cups_papercut_pfx_password}}"
+  become: yes
+  become_user: "{{cups_papercut_acct_usn}}"
+
+- name: Delete the temp pfx certificate
+  file:
+    path: "{{cups_papercut_tmp_location}}/certificate.pfx"
+    state: absent
+
+- name: Change server.config settings to reference this ssl certificate
+  lineinfile:
+    dest: "{{cups_papercut_install_location}}/server/server.properties"
+    regexp: ".*server.ssl.keystore=.*"
+    line: "server.ssl.keystore={{cups_papercut_custom_ssl_keystore}}"
+    state: present
+
+- name: Change server.config settings to add pfx password if defined
+  lineinfile:
+    dest: "{{cups_papercut_install_location}}/server/server.properties"
+    regexp: ".*server.ssl.keystore-password=.*"
+    line: "server.ssl.keystore-password={{cups_papercut_pfx_password}}"
+    state: present
+  when: cups_papercut_pfx_password is defined
+
+- name: Change server.config settings to add ssl key password if defined
+  lineinfile:
+    dest: "{{cups_papercut_install_location}}/server/server.properties"
+    regexp: ".*server.ssl.key-password=.*"
+    line: "server.ssl.key-password={{cups_papercut_pfx_password}}"
+    state: present
+  when: cups_papercut_pfx_password is defined

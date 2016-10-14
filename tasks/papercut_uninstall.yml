@@ -1,0 +1,28 @@
+---
+- name: Copy papercut-uninstall.exp install script to {{ cups_papercut_tmp_location }}
+  copy:
+    src: "files/papercut-uninstall.exp"
+    dest: "{{cups_papercut_tmp_location}}/papercut-uninstall.exp"
+    mode: a+rx
+
+- name: Uninstall previous PaperCut installation if varaibles allow it.
+  command: >
+    expect
+    "{{cups_papercut_tmp_location}}/papercut-uninstall.exp"
+    "{{cups_papercut_install_location}}"
+    "{{cups_papercut_install_location}}/uninstall"
+- name: Check if PaperCut was uninstalled.
+  stat:
+    path: "{{cups_papercut_install_location}}/uninstall"
+  register: cups_papercut_already_installed_after_uninstall
+
+- name: Fail if uninstall script exists.
+  fail:
+    msg: "Uninstall was requested on the previous installation and it failed as the file(s) still remain."
+  when: cups_papercut_already_installed_after_uninstall.stat.exists
+
+- name: Delete previous PaperCut account ({{cups_papercut_acct_usn}}) if it exists
+  user: 
+    name: "{{cups_papercut_acct_usn}}"
+    state: absent
+    remove: yes

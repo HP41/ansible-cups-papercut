@@ -1,0 +1,4 @@
+---
+#- name: Modify samba config
+
+#- name: Add 'webprint' user to smbpasswd

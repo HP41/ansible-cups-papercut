@@ -1,0 +1,80 @@
+---
+- name: Update apt cache and safe ugprade pacakges.
+  apt: update_cache=yes upgrade=safe
+
+- name: Ensure papercut temp location exists {{ cups_papercut_tmp_location }} exists
+  file:
+    path: "{{cups_papercut_tmp_location}}"
+    recurse: yes
+    state: directory
+
+# If the output is none or the command failed to find "install ok installed" then it means the package wasn't installed beforehand
+- name: Check and register if expect related packages are already installed.
+  command: dpkg -s {{item}} | grep 'install ok installed'
+  register: cups_papercut_expect_pkgs_already_installed
+  with_items:
+    - "{{cups_papercut_expect_pkgs}}"
+  changed_when: False
+  failed_when: False
+
+- name: Ensure expect related packages are installed to guide us through PaperCut installation.
+  apt: name={{ item }} state=present
+  with_items:
+    - "{{cups_papercut_expect_pkgs}}"
+
+- name: Check if a previous installation exists by checking if uninstall script exists.
+  stat:
+    path: "{{cups_papercut_install_location}}/uninstall"
+  register: cups_papercut_already_installed
+
+- name: Check if version file exists
+  stat:
+    path: "{{cups_papercut_install_location}}/server/version.txt"
+  register: cups_papercut_previous_version_file
+
+- block:
+    - name: Fetch version file from remote hosts
+      fetch:
+        src: "{{cups_papercut_version_file}}"
+        dest: "{{cups_papercut_fetch_previous_version_to_localhost_location}}"
+        flat: True
+      # become=no due to Ansible recommendations - http://docs.ansible.com/ansible/fetch_module.html#notes
+      become: no
+
+    - name: Register version as string (Default=0.0)
+      set_fact:
+        cups_papercut_previous_version_tmp: "{{ lookup('ini', 'version-major section=version file={{cups_papercut_fetch_previous_version_to_localhost_location}}')|d(0) }}.{{ lookup('ini', 'version-minor section=version file={{cups_papercut_fetch_previous_version_to_localhost_location}}')|d(0) }}"
+  when: cups_papercut_previous_version_file.stat.exists
+
+- name: Register previous version if it exists. (Default=0)
+  set_fact:
+    cups_papercut_previous_version: "{{cups_papercut_previous_version_tmp|d(0)}}"
+
+- name: Display previous version if it exists
+  debug:
+    msg: "Previous PaperCut version {{cups_papercut_previous_version}} exists"
+  when: cups_papercut_previous_version|float > 0.0|float
+
+- name: Include PaperCut uninstall tasks
+  include: papercut_uninstall.yml
+  when: ( cups_papercut_previous_version|float < 16.3|float or cups_papercut_previous_version|float >= 17.0|float ) and cups_papercut_already_installed.stat.exists
+
+- name: Create a non-priviliged PaperCut account ({{cups_papercut_acct_usn}}) under which all papercut operations are done. 
+  user: 
+    name: "{{cups_papercut_acct_usn}}"
+    password: "{{cups_papercut_acct_pwd}}"
+    groups: "{{cups_papercut_acct_groups}}"
+    shell: "/bin/bash"
+
+- name: Ensure {{ cups_papercut_acct_usn }} has passwordless sudo access for the time being
+  lineinfile:
+    dest: "/etc/sudoers"
+    line: "{{cups_papercut_sudoers_content}}"
+    state: present
+
+- name: Ensure {{ cups_papercut_acct_usn }} has no resource usage limits
+  lineinfile: 
+    dest: "{{cups_papercut_ulimit_conf_file_location}}"
+    regexp: "{{cups_papercut_acct_usn}} - nofile.*"
+    line: "{{cups_papercut_acct_usn}} - nofile 65535"
+    state: present

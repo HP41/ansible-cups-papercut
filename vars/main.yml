@@ -1,0 +1,27 @@
+---
+cups_papercut_ulimit_conf_file_location: /etc/security/limits.conf
+cups_papercut_install_file: "papercut_mf_linux_x64_setup.sh"
+cups_papercut_acct_usn: papercut
+
+# jetty because - http://www.papercut.com/products/ng/manual/common/topics/tools-ssl-key-generation.html#tools-ssl-troubleshooting-checkalias
+cups_papercut_certificate_alias_name: "jetty"
+
+cups_papercut_install_location: "/home/{{cups_papercut_acct_usn}}"
+cups_papercut_tmp_location: "/tmp/papercut_installer"
+
+cups_papercut_custom_ssl_keystore: "{{cups_papercut_install_location}}/server/custom/my-ssl-keystore"
+
+cups_papercut_sudoers_content: '{{cups_papercut_acct_usn}} ALL=(ALL) NOPASSWD: ALL'
+
+cups_papercut_expect_pkgs:
+  - "expect"
+  - "python-pexpect"
+
+cups_papercut_smb_conf_lcoation: "/etc/samba/smb.conf"
+
+cups_papercut_pkcs_classpath: "{{cups_papercut_install_location}}/server/lib/*"
+cups_papercut_pkcs_classname: "org.mortbay.jetty.server.ssl.PKCS12Import"
+
+cups_papercut_db_tools: "{{cups_papercut_install_location}}/server/bin/linux-x64/db-tools"
+
+cups_papercut_version_file: "{{cups_papercut_install_location}}/server/version.txt"

@@ -1,0 +1,27 @@
+#!/usr/bin/expect -f
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+                          ;# script wasn't run conservatively originally
+if {$force_conservative} {
+    set send_slow {1 .1}
+    proc send {ignore arg} {
+        sleep .1
+        exp_send -s -- $arg
+    }
+}
+
+set timeout 300
+set papercut_install_directory [lindex $argv 0]
+set uninstall_exec_file [lindex $argv 1]
+
+spawn $env(SHELL)
+match_max 100000
+
+send -- "cd $papercut_install_directory\r"
+send -- "$uninstall_exec_file\r"
+
+expect "Would you like to uninstall" { send -- "yes\r" }
+expect "Would you like to delete the server backup files" { send -- "yes\r" }
+
+expect ":" { send -- "exit\r" }
+expect eof

@@ -1,0 +1,34 @@
+---
+- name: Stopping PaperCut Application to configure it
+  command: "{{cups_papercut_install_location}}/server/bin/linux-x64/stop-server"
+
+- name: Copy license key file when defined (cups_papercut_license_key_file)
+  copy:
+    src: "{{cups_papercut_license_key_file}}"
+    dest: "{{cups_papercut_install_location}}/server/application.license"
+    owner: "{{cups_papercut_acct_usn}}"
+    mode: 0644
+  when: cups_papercut_license_key_file is defined
+
+- name: Copy server.properties file when defined (cups_papercut_server_properties_file_location)
+  copy:
+    src: "{{cups_papercut_server_properties_file_location}}"
+    dest: "{{cups_papercut_install_location}}/server/server.properties"
+    owner: "{{cups_papercut_acct_usn}}"
+    mode: u=rw
+  when: cups_papercut_server_properties_file_location is defined
+
+- name: Include papercut import backed up database tasks
+  include: papercut_restore_database.yml
+  when: cups_papercut_db_backup_file is defined
+
+- name: Use the SSL keys if specified and create the certificate file that Papercut can use.
+  include: papercut_install_ssl_cert.yml
+  when: (cups_papercut_source_ssl_public_key_location is defined) and (cups_papercut_source_ssl_private_key_location is defined)
+
+- name: Configure PaperCut for Sandbox based web print
+  include: papercut_configure_for_sandbox_web_print.yml
+  when: cups_papercut_sandbox_web_print
+
+- name: Starting PaperCut Application
+  command: "{{cups_papercut_install_location}}/server/bin/linux-x64/start-server"

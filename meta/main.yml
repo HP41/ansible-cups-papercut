@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  author: Hitesh Prabhakar
+  description: Installs and configures Papercut 16.3 (any PaperCut versions < 16.3  and >= 17 will be UNINSTALLED).
+  license: MIT, Papercut-https://www.papercut.com/products/ng/manual/common/topics/license.html
+  min_ansible_version: 2.1
+  platforms:
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+        - precise
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie
+        - stretch
+
+  galaxy_tags:
+    - printing
+    - papercut
+
+dependencies: []

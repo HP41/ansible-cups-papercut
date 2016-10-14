@@ -1,0 +1,30 @@
+#!/usr/bin/expect -f
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+                          ;# script wasn't run conservatively originally
+if {$force_conservative} {
+    set send_slow {1 .1}
+    proc send {ignore arg} {
+        sleep .1
+        exp_send -s -- $arg
+    }
+}
+
+set timeout 30
+set java_exec [lindex $argv 0]
+set classpath_location [lindex $argv 1]
+set class_name [lindex $argv 2]
+set pfx_certificate_location [lindex $argv 3]
+set out_location [lindex $argv 4]
+set certificate_pwd [lindex $argv 5]
+
+spawn $env(SHELL)
+match_max 100000
+
+send -- "$java_exec -cp \"$classpath_location\" $class_name $pfx_certificate_location $out_location\r"
+
+expect "Enter input keystore passphrase" { send -- "\r" }
+expect "Enter output keystore passphrase" { send -- "$certificate_pwd\r" }
+
+expect ":" { send -- "exit\r" }
+expect eof

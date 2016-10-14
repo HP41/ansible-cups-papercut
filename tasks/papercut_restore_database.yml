@@ -1,0 +1,16 @@
+---
+- name: Copy the database backup file.
+  copy:
+    src: "{{cups_papercut_db_backup_file}}"
+    dest: "{{cups_papercut_tmp_location}}/db-backup.zip"
+    owner: "{{cups_papercut_acct_usn}}"
+    mode: a+r
+
+- block:
+    - name: Clean initialize Papercut DB
+      command: "{{cups_papercut_db_tools}} init-db -q -f"
+
+    - name: Restoring backup database
+      command: "{{cups_papercut_db_tools}} import-db -q -f {{cups_papercut_tmp_location}}/db-backup.zip"
+  become: yes
+  become_user: "{{cups_papercut_acct_usn}}"
