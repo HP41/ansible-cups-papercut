@@ -31,7 +31,9 @@ script:
     && (echo 'Role run: pass' && exit 0) 
     || (echo 'Role run: fail' && exit 1)
 
-  # Make sure GitLab is running.
+  - curl --insecure -w "%{http_code}" http://localhost:9191
+
+  # Make sure PaperCut is running.
   - >
     curl --insecure -s -o /dev/null -w "%{http_code}" http://localhost:9191
     | grep -q '200'
