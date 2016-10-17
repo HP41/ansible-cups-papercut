@@ -1,6 +1,8 @@
 ---
-- name: Update apt cache and safe ugprade pacakges.
-  apt: update_cache=yes upgrade=safe
+- name: Update apt cache.
+  apt: 
+    update_cache: "yes" 
+    # upgrade=safe
 
 - name: Ensure papercut temp location exists {{ cups_papercut_tmp_location }} exists
   file:
