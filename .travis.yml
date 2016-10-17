@@ -26,7 +26,7 @@ script:
   - ansible-playbook -i tests/inventory tests/$SITE --syntax-check
 
   # Run the role/playbook with ansible-playbook.
-  - script -q -c "ansible-playbook -i tests/inventory tests/$SITE --connection=local --sudo" output.txt
+  - script -q -c "ansible-playbook -i tests/inventory tests/$SITE --connection=local --sudo -vvvv" output.txt
 
   - >
     grep -q 'failed=0' output.txt
