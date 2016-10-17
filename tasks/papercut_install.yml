@@ -4,6 +4,7 @@
     url: "{{cups_papercut_download_url}}"
     dest: "{{cups_papercut_tmp_location}}/{{cups_papercut_install_file}}"
     mode: a+x
+    validate_certs: "{{'no' if cups_papercut_testing else 'yes'}}"
 
 - name: Installing Papercut non interactively.
   command: "{{cups_papercut_tmp_location}}/{{cups_papercut_install_file}} --non-interactive"
