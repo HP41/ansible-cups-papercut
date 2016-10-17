@@ -4,9 +4,6 @@ cups_papercut_acct_pwd: "$6$rounds=656000$Z9nmDoEUNKCBJp1B$LQam1Lp00eIJyttcvVsnf
 cups_papercut_sandbox_web_print: False
 cups_papercut_download_url: "https://cdn.papercut.com/files/mf/16.x/pcmf-setup-16.3.38126-linux-x64.sh"
 
-# For tests - Will not verify ssl certs while downla\oading PaperCut downloader.
-cups_papercut_testing: False
-
 # Groups are comma de-limitted
 cups_papercut_acct_groups: ""
 

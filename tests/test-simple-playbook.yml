@@ -14,8 +14,6 @@
           - "TestPrinter1"
           - "TestPrinter2"
 
-    cups_papercut_testing: True
-
   roles:
     - HP41.cups
     - ansible-cups-papercut
