@@ -1,4 +1,6 @@
-# cups-papercut
+# Ansible Role: cups-papercut
+
+[![Build Status](https://travis-ci.org/HP41/ansible-cups-papercut.svg?branch=master)](https://travis-ci.org/HP41/ansible-cups-papercut)
 
 ### First, read PaperCut [TOS and EULA](https://www.papercut.com/products/ng/manual/common/topics/license.html). Only proceed if you agree to them.
 

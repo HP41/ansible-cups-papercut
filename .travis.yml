@@ -14,10 +14,10 @@ install:
   - pip install ansible
 
   # Ensure to install cups beforehand
-  - ansible-galaxy install --role-file=tests/requirements.yml --roles-path=tests/ --force --ignore-errors
+  - ansible-galaxy install --role-file=tests/requirements.yml --roles-path=../ --force --ignore-errors
 
   # Add ansible.cfg to pick up roles path.
-  - "{ echo '[defaults]'; echo 'roles_path = tests/'; echo 'roles_path = ../'; } >> ansible.cfg"
+  - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"
 
 script:
   # Check the role/playbook's syntax.
@@ -27,7 +27,7 @@ script:
   - script -q -c "ansible-playbook -i tests/inventory tests/$SITE --connection=local --sudo" output.txt
 
   - >
-    grep output.txt -q 'failed=0' 
+    grep -q 'failed=0' output.txt
     && (echo 'Role run: pass' && exit 0) 
     || (echo 'Role run: fail' && exit 1)
 
