@@ -1,0 +1,19 @@
+- hosts: localhost
+  remote_user: root
+
+  vars:
+    cups_printer_list:
+      - name: "TestPrinter1"
+        uri: "file:///dev/null"
+      - name: "TestPrinter2"
+        uri: "file:///dev/null"
+
+    cups_class_list:
+      - name: "TestClass"
+        members:
+          - "TestPrinter1"
+          - "TestPrinter2"
+
+  roles:
+    - HP41.cups
+    - ansible-cups-papercut
