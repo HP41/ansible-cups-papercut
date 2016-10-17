@@ -1,8 +1,6 @@
 ---
-sudo: required
-dist: trusty
 language: python
-python: "2.7.10"
+python: "2.7"
 
 env:
   - SITE=test-simple-playbook.yml
@@ -13,7 +11,7 @@ before_install:
 
 install:
   # Install Ansible. The other packages are to allow SNI veriification of SSL certs.
-  - yes | pip install ansible urllib3 pyopenssl ndg-httpsclient pyasn1
+  - yes | pip install ansible
 
   # Ensure to install cups beforehand
   - ansible-galaxy install --role-file=tests/requirements.yml --roles-path=../ --force --ignore-errors
