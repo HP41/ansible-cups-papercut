@@ -12,7 +12,7 @@ before_install:
   - sudo apt-get -y -qq install aptitude
 
 install:
-  # Install Ansible. The other packages are to allow SNI veriification of SSL certs.
+  # Install Ansible.
   - yes | pip install ansible
 
   # Ensure to install cups beforehand
