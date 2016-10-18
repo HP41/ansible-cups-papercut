@@ -33,13 +33,12 @@ script:
     && (echo 'Role run: pass' && exit 0) 
     || (echo 'Role run: fail' && exit 1)
 
+  # To give PaperCut Application time to startup.
   - sleep 300
-
-  - curl --insecure --location -w "%{http_code}" http://localhost:9191
 
   # Make sure PaperCut is running.
   - >
-    curl --insecure --location -s -o /dev/null -w "%{http_code}" http://localhost:9191
+    curl --insecure -L -s -o /dev/null -w "%{http_code}" http://localhost:9191
     | grep -q '200'
     && (echo 'Status code 200 test: pass' && exit 0)
     || (echo 'Status code 200 test: fail' && exit 1)
