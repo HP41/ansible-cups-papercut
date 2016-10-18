@@ -1,8 +1,14 @@
 ---
-sudo: required
-dist: trusty
 language: python
 python: "2.7"
+
+matrix:
+  include:
+    - os: linux
+      sudo: required
+      dist: trusty
+    - os: linux
+      sudo: required
 
 env:
   - SITE=test-simple-playbook.yml
