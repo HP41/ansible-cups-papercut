@@ -35,11 +35,11 @@ script:
 
   - sleep 300
 
-  - curl --insecure -w "%{http_code}" http://localhost:9191
+  - curl --insecure --location -w "%{http_code}" http://localhost:9191
 
   # Make sure PaperCut is running.
   - >
-    curl --insecure -s -o /dev/null -w "%{http_code}" http://localhost:9191
+    curl --insecure --location -s -o /dev/null -w "%{http_code}" http://localhost:9191
     | grep -q '200'
     && (echo 'Status code 200 test: pass' && exit 0)
     || (echo 'Status code 200 test: fail' && exit 1)
