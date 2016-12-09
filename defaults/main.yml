@@ -29,15 +29,10 @@ cups_papercut_client_share_files__bertvv_samba_config:
 
 cups_papercut_fetch_previous_version_to_localhost_location: "/tmp/cups_papercut_ansible_role/{{inventory_hostname}}/previous_papercut_info"
 
+cups_papercut_server_properties_file_location: ""
 
-##################################################
-############# CONFIGURABLE VARIABLES #############
-##################################################
-
-#cups_papercut_server_properties_file_location: ''
-
-#cups_papercut_pfx_password: ""
-#cups_papercut_license_key_file: ''
-#cups_papercut_source_ssl_private_key_location: ''
-#cups_papercut_source_ssl_public_key_location: ''
-#cups_papercut_db_backup_file: ''
+cups_papercut_pfx_password: ""
+cups_papercut_license_key_file: ""
+cups_papercut_source_ssl_private_key_location: ""
+cups_papercut_source_ssl_public_key_location: ""
+cups_papercut_db_backup_file: ""

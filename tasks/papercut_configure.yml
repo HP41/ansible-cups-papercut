@@ -8,7 +8,7 @@
     dest: "{{cups_papercut_install_location}}/server/application.license"
     owner: "{{cups_papercut_acct_usn}}"
     mode: 0644
-  when: cups_papercut_license_key_file is defined
+  when: cups_papercut_license_key_file|default("") != ""
 
 - name: Copy server.properties file when defined (cups_papercut_server_properties_file_location)
   copy:
@@ -16,15 +16,15 @@
     dest: "{{cups_papercut_install_location}}/server/server.properties"
     owner: "{{cups_papercut_acct_usn}}"
     mode: u=rw
-  when: cups_papercut_server_properties_file_location is defined
+  when: cups_papercut_server_properties_file_location|default("") != ""
 
 - name: Include papercut import backed up database tasks
   include: papercut_restore_database.yml
-  when: cups_papercut_db_backup_file is defined
+  when: cups_papercut_db_backup_file|default("") != ""
 
 - name: Use the SSL keys if specified and create the certificate file that Papercut can use.
   include: papercut_install_ssl_cert.yml
-  when: (cups_papercut_source_ssl_public_key_location is defined) and (cups_papercut_source_ssl_private_key_location is defined)
+  when: (cups_papercut_source_ssl_public_key_location|default("") != "") and (cups_papercut_source_ssl_private_key_location|default("") != "")
 
 - name: Configure PaperCut for Sandbox based web print
   include: papercut_configure_for_sandbox_web_print.yml

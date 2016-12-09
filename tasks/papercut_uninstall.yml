@@ -11,6 +11,7 @@
     "{{cups_papercut_tmp_location}}/papercut-uninstall.exp"
     "{{cups_papercut_install_location}}"
     "{{cups_papercut_install_location}}/uninstall"
+    
 - name: Check if PaperCut was uninstalled.
   stat:
     path: "{{cups_papercut_install_location}}/uninstall"

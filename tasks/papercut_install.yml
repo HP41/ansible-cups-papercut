@@ -1,11 +1,18 @@
 ---
-- name: Download Papercut Installer
-  get_url:
-    url: "{{cups_papercut_download_url}}"
-    dest: "{{cups_papercut_tmp_location}}/{{cups_papercut_install_file}}"
-    mode: a+x
+- name: Check if PaperCut installation exists. Wrong versions would've been uninstalled by now or error-ed out. Therefore only proper installations or no installations will exist
+  stat:
+    path: "{{cups_papercut_install_location}}/uninstall"
+  register: cups_papercut_proper_install_present
 
-- name: Installing Papercut non interactively.
-  command: "{{cups_papercut_tmp_location}}/{{cups_papercut_install_file}} --non-interactive"
-  become: yes
-  become_user: "{{cups_papercut_acct_usn}}"
+- block:
+    - name: Download Papercut Installer
+      get_url:
+        url: "{{cups_papercut_download_url}}"
+        dest: "{{cups_papercut_tmp_location}}/{{cups_papercut_install_file}}"
+        mode: a+x
+
+    - name: Installing Papercut non interactively.
+      command: "{{cups_papercut_tmp_location}}/{{cups_papercut_install_file}} --non-interactive"
+      become: yes
+      become_user: "{{cups_papercut_acct_usn}}"
+  when: not cups_papercut_proper_install_present.stat.exists
